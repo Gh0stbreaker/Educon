@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Educon.Models;
 
 public class TeacherSchoolAssignment
@@ -10,6 +12,9 @@ public class TeacherSchoolAssignment
     public Guid SchoolId { get; set; }
     public School School { get; set; } = null!;
 
+    [DataType(DataType.Date)]
     public DateTime AssignedFrom { get; set; }
+
+    [DataType(DataType.Date)]
     public DateTime? AssignedTo { get; set; }
 }

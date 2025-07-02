@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Educon.Models;
 
 public class ScheduleEntry
@@ -11,8 +13,12 @@ public class ScheduleEntry
     public SubjectTeacher SubjectTeacher { get; set; } = null!;
 
     public DayOfWeek Day { get; set; }
+    [DataType(DataType.Time)]
     public TimeSpan StartTime { get; set; }
+
+    [DataType(DataType.Time)]
     public TimeSpan EndTime { get; set; }
 
+    [StringLength(50)]
     public string? Room { get; set; }
 }

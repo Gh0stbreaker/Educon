@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Educon.Models;
 
 public class StudentProfile
@@ -9,6 +11,7 @@ public class StudentProfile
     public Guid? ClassId { get; set; }
     public SchoolClass? Class { get; set; }
 
+    [DataType(DataType.Date)]
     public DateTime EnrollmentDate { get; set; }
     public StudentType StudentType { get; set; } = StudentType.Regular;
     public StudentStatus StudentStatus { get; set; } = StudentStatus.Active;
