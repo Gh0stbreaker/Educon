@@ -1,6 +1,7 @@
 using Educon.Data;
 using Educon.Models;
 using Educon.Mappings;
+using Educon.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<EduconContext>(options =>
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
     .AddEntityFrameworkStores<EduconContext>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
