@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Educon.Models;
 
 public class SchoolClass
@@ -5,6 +7,7 @@ public class SchoolClass
     public Guid? SchoolYearId { get; set; }
     public SchoolYear? SchoolYear { get; set; }
     public Guid Id { get; set; }
+    [Required, StringLength(50)]
     public string Name { get; set; } = null!;
 
     public Guid? HomeroomTeacherId { get; set; }
