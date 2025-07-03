@@ -1,5 +1,5 @@
 using Educon.Models;
-using Educon.Repositories;
+using Educon.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Educon.Controllers;
@@ -8,9 +8,9 @@ namespace Educon.Controllers;
 [Route("api/[controller]")]
 public class SchoolsController : ControllerBase
 {
-    private readonly IRepository<School> _repository;
+    private readonly ISchoolRepository _repository;
 
-    public SchoolsController(IRepository<School> repository)
+    public SchoolsController(ISchoolRepository repository)
     {
         _repository = repository;
     }
