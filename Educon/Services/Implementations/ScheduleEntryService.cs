@@ -1,9 +1,23 @@
 using Educon.Models;
 using Educon.Repositories.Interfaces;
+using System.Linq;
 
 namespace Educon.Services.Implementations;
 
 public class ScheduleEntryService : GenericService<ScheduleEntry>, IScheduleEntryService
 {
-    public ScheduleEntryService(IScheduleEntryRepository repository) : base(repository) { }
+    private readonly IScheduleEntryRepository _repository;
+
+    public ScheduleEntryService(IScheduleEntryRepository repository) : base(repository)
+    {
+        _repository = repository;
+    }
+
+    public Task<IEnumerable<ScheduleEntry>> GetEntriesByClassAsync(Guid classId, CancellationToken cancellationToken = default)
+    {
+        return _repository.GetAsync(
+            e => e.SchoolClassId == classId,
+            cancellationToken: cancellationToken,
+            includes: e => e.SchoolClass!, e => e.SubjectTeacher);
+    }
 }
