@@ -4,6 +4,7 @@ using Educon.Mappings;
 using Educon.Repositories;
 using Educon.Repositories.Interfaces;
 using Educon.Repositories.Implementations;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddDbContext<EduconContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection")));
 
