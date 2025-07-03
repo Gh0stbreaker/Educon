@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Educon.Models;
 using Educon.Repositories;
+using Educon.Services.Interfaces;
 using Educon.Repositories.Interfaces;
 
 namespace Educon.Services.Implementations;
