@@ -5,7 +5,7 @@ namespace Educon.Repositories;
 public interface IRepository<T> where T : class
 {
     Task<IEnumerable<T>> GetAllAsync();
-    Task<T?> GetByIdAsync(Guid id);
+    Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes);
     Task<T> AddAsync(T entity);
     Task UpdateAsync(T entity);
     Task DeleteAsync(Guid id);
@@ -14,12 +14,14 @@ public interface IRepository<T> where T : class
         Expression<Func<T, bool>>? filter = null,
         Expression<Func<T, object>>? orderBy = null,
         bool ascending = true,
-        string? searchTerm = null);
+        string? searchTerm = null,
+        params Expression<Func<T, object>>[] includes);
     Task<PagedResult<T>> GetPagedAsync(
         int page,
         int pageSize,
         Expression<Func<T, bool>>? filter = null,
         Expression<Func<T, object>>? orderBy = null,
         bool ascending = true,
-        string? searchTerm = null);
+        string? searchTerm = null,
+        params Expression<Func<T, object>>[] includes);
 }

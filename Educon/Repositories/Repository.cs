@@ -73,11 +73,17 @@ public class Repository<T> : IRepository<T> where T : class
         Expression<Func<T, bool>>? filter = null,
         Expression<Func<T, object>>? orderBy = null,
         bool ascending = true,
-        string? searchTerm = null)
+        string? searchTerm = null,
+        params Expression<Func<T, object>>[] includes)
     {
         try
         {
             IQueryable<T> query = _dbSet.AsNoTracking();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -109,7 +115,8 @@ public class Repository<T> : IRepository<T> where T : class
         Expression<Func<T, bool>>? filter = null,
         Expression<Func<T, object>>? orderBy = null,
         bool ascending = true,
-        string? searchTerm = null)
+        string? searchTerm = null,
+        params Expression<Func<T, object>>[] includes)
     {
         try
         {
@@ -117,6 +124,11 @@ public class Repository<T> : IRepository<T> where T : class
             pageSize = pageSize < 1 ? 1 : pageSize;
 
             IQueryable<T> query = _dbSet.AsNoTracking();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -160,13 +172,18 @@ public class Repository<T> : IRepository<T> where T : class
         }
     }
 
-    public async Task<T?> GetByIdAsync(Guid id)
+    public async Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes)
     {
         try
         {
-            return await _dbSet
-                .AsNoTracking()
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
+            IQueryable<T> query = _dbSet.AsNoTracking();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
         }
         catch (Exception ex)
         {
