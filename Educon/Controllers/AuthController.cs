@@ -26,19 +26,44 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
             return Unauthorized();
         }
 
-        var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-        if (!result.Succeeded)
+        if (!user.EmailConfirmed)
         {
             return Unauthorized();
         }
 
-        var token = _tokenService.CreateToken(user);
-        return Ok(new { token });
+        var result = await _signInManager.PasswordSignInAsync(
+            user,
+            request.Password,
+            isPersistent: false,
+            lockoutOnFailure: true);
+
+        if (result.Succeeded)
+        {
+            var token = _tokenService.CreateToken(user);
+            return Ok(new { token });
+        }
+
+        if (result.IsLockedOut)
+        {
+            return Unauthorized();
+        }
+
+        if (result.RequiresTwoFactor)
+        {
+            return Unauthorized();
+        }
+
+        return Unauthorized();
     }
 }
