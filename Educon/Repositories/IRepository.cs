@@ -15,4 +15,11 @@ public interface IRepository<T> where T : class
         Expression<Func<T, object>>? orderBy = null,
         bool ascending = true,
         string? searchTerm = null);
+    Task<PagedResult<T>> GetPagedAsync(
+        int page,
+        int pageSize,
+        Expression<Func<T, bool>>? filter = null,
+        Expression<Func<T, object>>? orderBy = null,
+        bool ascending = true,
+        string? searchTerm = null);
 }

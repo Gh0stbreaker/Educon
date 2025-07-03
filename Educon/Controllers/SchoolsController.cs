@@ -1,5 +1,6 @@
 using Educon.Models;
 using Educon.Repositories.Interfaces;
+using Educon.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 
@@ -17,13 +18,15 @@ public class SchoolsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<School>> Get(
+    public async Task<PagedResult<School>> Get(
         string? search,
         string? sortBy,
         bool ascending = true,
         SchoolType? type = null,
         SchoolStatus? status = null,
-        SchoolLevel? level = null)
+        SchoolLevel? level = null,
+        int page = 1,
+        int pageSize = 10)
     {
         Expression<Func<School, bool>>? filter = null;
         if (type.HasValue || status.HasValue || level.HasValue)
@@ -52,7 +55,7 @@ public class SchoolsController : ControllerBase
             };
         }
 
-        return await _repository.GetAsync(filter, orderBy, ascending, search);
+        return await _repository.GetPagedAsync(page, pageSize, filter, orderBy, ascending, search);
     }
 
     [HttpGet("{id}")]
