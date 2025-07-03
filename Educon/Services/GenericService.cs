@@ -4,11 +4,15 @@ using Educon.Repositories;
 
 namespace Educon.Services;
 
-public class Service<T> : IService<T> where T : class, IEntity
+/// <summary>
+/// Generic implementation of <see cref="IGenericService{T}"/> that forwards
+/// all calls to the underlying <see cref="IRepository{T}"/>.
+/// </summary>
+public class GenericService<T> : IGenericService<T> where T : class, IEntity
 {
     private readonly IRepository<T> _repository;
 
-    public Service(IRepository<T> repository)
+    public GenericService(IRepository<T> repository)
     {
         _repository = repository;
     }
