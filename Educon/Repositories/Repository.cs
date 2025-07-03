@@ -57,7 +57,10 @@ public class Repository<T> : IRepository<T> where T : class
     {
         try
         {
-            return await _dbSet.Where(predicate).ToListAsync();
+            return await _dbSet
+                .AsNoTracking()
+                .Where(predicate)
+                .ToListAsync();
         }
         catch (Exception ex)
         {
@@ -74,7 +77,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         try
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = _dbSet.AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -113,7 +116,7 @@ public class Repository<T> : IRepository<T> where T : class
             page = page < 1 ? 1 : page;
             pageSize = pageSize < 1 ? 1 : pageSize;
 
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = _dbSet.AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -146,7 +149,9 @@ public class Repository<T> : IRepository<T> where T : class
     {
         try
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet
+                .AsNoTracking()
+                .ToListAsync();
         }
         catch (Exception ex)
         {
@@ -159,7 +164,9 @@ public class Repository<T> : IRepository<T> where T : class
     {
         try
         {
-            return await _dbSet.FindAsync(id);
+            return await _dbSet
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
         }
         catch (Exception ex)
         {
