@@ -1,9 +1,10 @@
 using AutoMapper;
 using Educon.Models;
+using ProfileEntity = Educon.Models.Profile;
 
 namespace Educon.Mappings;
 
-public class AutoMapperProfile : Profile
+public class AutoMapperProfile : AutoMapper.Profile
 {
     public AutoMapperProfile()
     {
@@ -12,7 +13,7 @@ public class AutoMapperProfile : Profile
         CreateMap<Grade, Grade>().ReverseMap();
         CreateMap<GradeLevel, GradeLevel>().ReverseMap();
         CreateMap<ParentProfile, ParentProfile>().ReverseMap();
-        CreateMap<Profile, Profile>().ReverseMap();
+        CreateMap<ProfileEntity, ProfileEntity>().ReverseMap();
         CreateMap<ScheduleEntry, ScheduleEntry>().ReverseMap();
         CreateMap<School, School>().ReverseMap();
         CreateMap<SchoolClass, SchoolClass>().ReverseMap();
