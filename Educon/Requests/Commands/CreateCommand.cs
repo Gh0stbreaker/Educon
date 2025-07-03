@@ -16,6 +16,6 @@ public class CreateCommandHandler<T> : IRequestHandler<CreateCommand<T>, T> wher
 
     public async Task<T> Handle(CreateCommand<T> request, CancellationToken cancellationToken)
     {
-        return await _repository.AddAsync(request.Entity);
+        return await _repository.AddAsync(request.Entity, cancellationToken);
     }
 }
