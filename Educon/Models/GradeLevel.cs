@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Educon.Models;
 
-public class GradeLevel
+public class GradeLevel : IEntity
 {
     public Guid Id { get; set; }
     [Required, StringLength(50)]

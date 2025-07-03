@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Educon.Models;
 
-public class StudyField
+public class StudyField : IEntity
 {
     public Guid Id { get; set; }
     [Required, StringLength(20)]

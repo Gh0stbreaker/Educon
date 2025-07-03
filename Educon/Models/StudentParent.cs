@@ -1,7 +1,8 @@
 namespace Educon.Models;
 
-public class StudentParent
+public class StudentParent : IEntity
 {
+    public Guid Id { get; set; }
     public Guid StudentId { get; set; }
     public StudentProfile Student { get; set; } = null!;
 

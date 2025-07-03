@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Educon.Models;
 
-public class StudentProfile
+public class StudentProfile : IEntity
 {
     public Guid Id { get; set; }
     public Guid ProfileId { get; set; }

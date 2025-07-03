@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Educon.Models;
 
-public class ScheduleEntry
+public class ScheduleEntry : IEntity
 {
     public Guid Id { get; set; }
 

@@ -1,6 +1,6 @@
 namespace Educon.Models;
 
-public class SubjectTeacher
+public class SubjectTeacher : IEntity
 {
     public Guid Id { get; set; }
 

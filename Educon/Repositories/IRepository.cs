@@ -1,8 +1,9 @@
 using System.Linq.Expressions;
+using Educon.Models;
 
 namespace Educon.Repositories;
 
-public interface IRepository<T> where T : class
+public interface IRepository<T> where T : class, IEntity
 {
     Task<IEnumerable<T>> GetAllAsync();
     Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes);
