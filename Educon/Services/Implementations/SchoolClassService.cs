@@ -1,6 +1,7 @@
 using Educon.Models;
 using Educon.Repositories.Interfaces;
 
+using Educon.Services.Interfaces;
 namespace Educon.Services.Implementations;
 
 public class SchoolClassService : GenericService<SchoolClass>, ISchoolClassService
