@@ -1,6 +1,7 @@
 using Educon.Models;
 using Educon.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace Educon.Controllers;
 
@@ -16,9 +17,42 @@ public class SchoolsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<School>> Get()
+    public async Task<IEnumerable<School>> Get(
+        string? search,
+        string? sortBy,
+        bool ascending = true,
+        SchoolType? type = null,
+        SchoolStatus? status = null,
+        SchoolLevel? level = null)
     {
-        return await _repository.GetAllAsync();
+        Expression<Func<School, bool>>? filter = null;
+        if (type.HasValue || status.HasValue || level.HasValue)
+        {
+            filter = s =>
+                (!type.HasValue || s.Type == type.Value) &&
+                (!status.HasValue || s.Status == status.Value) &&
+                (!level.HasValue || s.Level == level.Value);
+        }
+
+        Expression<Func<School, object>>? orderBy = null;
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            orderBy = sortBy.ToLower() switch
+            {
+                "name" => s => s.Name,
+                "type" => s => s.Type,
+                "level" => s => s.Level,
+                "status" => s => s.Status,
+                "address" => s => s.Address,
+                "email" => s => s.Email!,
+                "phone" => s => s.Phone!,
+                "ico" => s => s.Ico!,
+                "director" => s => s.Director!,
+                _ => null
+            };
+        }
+
+        return await _repository.GetAsync(filter, orderBy, ascending, search);
     }
 
     [HttpGet("{id}")]

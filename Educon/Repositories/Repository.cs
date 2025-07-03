@@ -66,6 +66,60 @@ public class Repository<T> : IRepository<T> where T : class
         }
     }
 
+    public async Task<IEnumerable<T>> GetAsync(
+        Expression<Func<T, bool>>? filter = null,
+        Expression<Func<T, object>>? orderBy = null,
+        bool ascending = true,
+        string? searchTerm = null)
+    {
+        try
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                var parameter = Expression.Parameter(typeof(T), "x");
+                Expression? combined = null;
+                var toLower = typeof(string).GetMethod(nameof(string.ToLower), Type.EmptyTypes)!;
+                var contains = typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) })!;
+                var searchConstant = Expression.Constant(searchTerm.ToLower());
+
+                foreach (var prop in typeof(T).GetProperties().Where(p => p.PropertyType == typeof(string)))
+                {
+                    var access = Expression.Property(parameter, prop);
+                    var notNull = Expression.NotEqual(access, Expression.Constant(null, typeof(string)));
+                    var lower = Expression.Call(access, toLower);
+                    var containsCall = Expression.Call(lower, contains, searchConstant);
+                    var expression = Expression.AndAlso(notNull, containsCall);
+                    combined = combined == null ? expression : Expression.OrElse(combined, expression);
+                }
+
+                if (combined != null)
+                {
+                    var lambda = Expression.Lambda<Func<T, bool>>(combined, parameter);
+                    query = query.Where(lambda);
+                }
+            }
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (orderBy != null)
+            {
+                query = ascending ? query.OrderBy(orderBy) : query.OrderByDescending(orderBy);
+            }
+
+            return await query.ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving {EntityType} with query", typeof(T).Name);
+            throw;
+        }
+    }
+
     public async Task<IEnumerable<T>> GetAllAsync()
     {
         try
