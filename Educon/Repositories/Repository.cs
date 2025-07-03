@@ -2,10 +2,11 @@ using Educon.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
+using Educon.Models;
 
 namespace Educon.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class
+public class Repository<T> : IRepository<T> where T : class, IEntity
 {
     private readonly EduconContext _context;
     private readonly DbSet<T> _dbSet;
@@ -183,7 +184,7 @@ public class Repository<T> : IRepository<T> where T : class
                 query = query.Include(include);
             }
 
-            return await query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
+            return await query.FirstOrDefaultAsync(e => e.Id == id);
         }
         catch (Exception ex)
         {
@@ -233,13 +234,8 @@ public class Repository<T> : IRepository<T> where T : class
         return query;
     }
 
-    private static Guid? GetEntityId(T entity)
+    private static Guid GetEntityId(T entity)
     {
-        var prop = typeof(T).GetProperty("Id");
-        if (prop != null && prop.PropertyType == typeof(Guid))
-        {
-            return (Guid?)prop.GetValue(entity);
-        }
-        return null;
+        return entity.Id;
     }
 }

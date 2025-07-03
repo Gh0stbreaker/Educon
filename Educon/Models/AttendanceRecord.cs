@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Educon.Models;
 
-public class AttendanceRecord
+public class AttendanceRecord : IEntity
 {
     public Guid Id { get; set; }
 

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Educon.Models;
 
-public class Subject
+public class Subject : IEntity
 {
     public Guid Id { get; set; }
     [Required, StringLength(100)]

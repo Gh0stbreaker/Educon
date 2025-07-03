@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Educon.Models;
 
-public class ParentProfile
+public class ParentProfile : IEntity
 {
     public Guid Id { get; set; }
     public Guid ProfileId { get; set; }
