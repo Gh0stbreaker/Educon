@@ -5,7 +5,7 @@ using Educon.Repositories.Interfaces;
 
 namespace Educon.Services.Implementations;
 
-public class SchoolService : Service<School>, ISchoolService
+public class SchoolService : GenericService<School>, ISchoolService
 {
     private readonly ISchoolRepository _repository;
 

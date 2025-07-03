@@ -2,7 +2,7 @@ using Educon.Models;
 
 namespace Educon.Services.Interfaces;
 
-public interface ISchoolService : IService<School>
+public interface ISchoolService : IGenericService<School>
 {
     Task<PagedResult<School>> GetSchoolsAsync(
         int page,

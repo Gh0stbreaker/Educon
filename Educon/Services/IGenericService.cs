@@ -4,7 +4,10 @@ using System.Linq.Expressions;
 
 namespace Educon.Services;
 
-public interface IService<T> where T : class, IEntity
+/// <summary>
+/// Generic service contract exposing CRUD-like operations for <typeparamref name="T"/>.
+/// </summary>
+public interface IGenericService<T> where T : class, IEntity
 {
     Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
