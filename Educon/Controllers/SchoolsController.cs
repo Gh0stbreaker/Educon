@@ -26,7 +26,8 @@ public class SchoolsController : ControllerBase
         SchoolStatus? status = null,
         SchoolLevel? level = null,
         int page = 1,
-        int pageSize = 10)
+        int pageSize = 10,
+        CancellationToken cancellationToken = default)
     {
         Expression<Func<School, bool>>? filter = null;
         if (type.HasValue || status.HasValue || level.HasValue)
@@ -55,13 +56,13 @@ public class SchoolsController : ControllerBase
             };
         }
 
-        return await _repository.GetPagedAsync(page, pageSize, filter, orderBy, ascending, search);
+        return await _repository.GetPagedAsync(page, pageSize, filter, orderBy, ascending, search, cancellationToken);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<School>> Get(Guid id)
+    public async Task<ActionResult<School>> Get(Guid id, CancellationToken cancellationToken)
     {
-        var school = await _repository.GetByIdAsync(id);
+        var school = await _repository.GetByIdAsync(id, cancellationToken);
         if (school == null)
         {
             return NotFound();
@@ -70,27 +71,27 @@ public class SchoolsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<School>> Post(School school)
+    public async Task<ActionResult<School>> Post(School school, CancellationToken cancellationToken)
     {
-        await _repository.AddAsync(school);
+        await _repository.AddAsync(school, cancellationToken);
         return CreatedAtAction(nameof(Get), new { id = school.Id }, school);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(Guid id, School school)
+    public async Task<IActionResult> Put(Guid id, School school, CancellationToken cancellationToken)
     {
         if (id != school.Id)
         {
             return BadRequest();
         }
-        await _repository.UpdateAsync(school);
+        await _repository.UpdateAsync(school, cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteAsync(id);
+        await _repository.DeleteAsync(id, cancellationToken);
         return NoContent();
     }
 }

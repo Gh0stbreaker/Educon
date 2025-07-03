@@ -16,6 +16,6 @@ public class UpdateCommandHandler<T> : IRequestHandler<UpdateCommand<T>> where T
 
     public async Task Handle(UpdateCommand<T> request, CancellationToken cancellationToken)
     {
-        await _repository.UpdateAsync(request.Entity);
+        await _repository.UpdateAsync(request.Entity, cancellationToken);
     }
 }

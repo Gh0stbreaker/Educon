@@ -16,6 +16,6 @@ public class GetByIdQueryHandler<T> : IRequestHandler<GetByIdQuery<T>, T?> where
 
     public async Task<T?> Handle(GetByIdQuery<T> request, CancellationToken cancellationToken)
     {
-        return await _repository.GetByIdAsync(request.Id);
+        return await _repository.GetByIdAsync(request.Id, cancellationToken);
     }
 }

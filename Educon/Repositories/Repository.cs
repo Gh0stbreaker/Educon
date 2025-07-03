@@ -19,12 +19,12 @@ public class Repository<T> : IRepository<T> where T : class, IEntity
         _logger = logger;
     }
 
-    public async Task<T> AddAsync(T entity)
+    public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
     {
         try
         {
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            await _dbSet.AddAsync(entity, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
             return entity;
         }
         catch (Exception ex)
@@ -34,18 +34,18 @@ public class Repository<T> : IRepository<T> where T : class, IEntity
         }
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         try
         {
-            var entity = await GetByIdAsync(id);
+            var entity = await GetByIdAsync(id, cancellationToken);
             if (entity == null)
             {
                 _logger.LogWarning("Entity {EntityType} with id {Id} not found for deletion", typeof(T).Name, id);
                 return;
             }
             _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -54,14 +54,14 @@ public class Repository<T> : IRepository<T> where T : class, IEntity
         }
     }
 
-    public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+    public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
     {
         try
         {
             return await _dbSet
                 .AsNoTracking()
                 .Where(predicate)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -75,6 +75,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity
         Expression<Func<T, object>>? orderBy = null,
         bool ascending = true,
         string? searchTerm = null,
+        CancellationToken cancellationToken = default,
         params Expression<Func<T, object>>[] includes)
     {
         try
@@ -101,7 +102,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity
                 query = ascending ? query.OrderBy(orderBy) : query.OrderByDescending(orderBy);
             }
 
-            return await query.ToListAsync();
+            return await query.ToListAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -117,6 +118,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity
         Expression<Func<T, object>>? orderBy = null,
         bool ascending = true,
         string? searchTerm = null,
+        CancellationToken cancellationToken = default,
         params Expression<Func<T, object>>[] includes)
     {
         try
@@ -146,8 +148,8 @@ public class Repository<T> : IRepository<T> where T : class, IEntity
                 query = ascending ? query.OrderBy(orderBy) : query.OrderByDescending(orderBy);
             }
 
-            var totalCount = await query.CountAsync();
-            var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            var totalCount = await query.CountAsync(cancellationToken);
+            var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
 
             return new PagedResult<T>(items, totalCount, page, pageSize);
         }
@@ -158,13 +160,13 @@ public class Repository<T> : IRepository<T> where T : class, IEntity
         }
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         try
         {
             return await _dbSet
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -173,7 +175,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity
         }
     }
 
-    public async Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes)
+    public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes)
     {
         try
         {
@@ -184,7 +186,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity
                 query = query.Include(include);
             }
 
-            return await query.FirstOrDefaultAsync(e => e.Id == id);
+            return await query.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -193,12 +195,12 @@ public class Repository<T> : IRepository<T> where T : class, IEntity
         }
     }
 
-    public async Task UpdateAsync(T entity)
+    public async Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
     {
         try
         {
             _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
         catch (Exception ex)
         {
